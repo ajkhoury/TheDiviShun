@@ -10,21 +10,21 @@
 
 namespace Utils
 {
-	static void CreateConsole(const char* name)
-	{
-		HANDLE lStdHandle = 0;
-		int hConHandle = 0;
-		FILE *fp = 0;
-		AllocConsole();
-		lStdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-		hConHandle = _open_osfhandle((intptr_t)lStdHandle, _O_TEXT);
-		SetConsoleTitle(name);
-		SetConsoleTextAttribute(lStdHandle, FOREGROUND_GREEN | FOREGROUND_INTENSITY | BACKGROUND_RED);
-		fp = _fdopen(hConHandle, "w");
-		freopen_s(&fp, "CONOUT$", "w", stdout);
-		//*stdout = *fp;
-		//setvbuf(stdout, NULL, _IONBF, 0);
-	}
+	//static void CreateConsole(const char* name)
+	//{
+	//	HANDLE lStdHandle = 0;
+	//	int hConHandle = 0;
+	//	FILE *fp = 0;
+	//	AllocConsole();
+	//	lStdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	//	hConHandle = _open_osfhandle((intptr_t)lStdHandle, _O_TEXT);
+	//	SetConsoleTitle(name);
+	//	SetConsoleTextAttribute(lStdHandle, FOREGROUND_GREEN | FOREGROUND_INTENSITY | BACKGROUND_RED);
+	//	fp = _fdopen(hConHandle, "w");
+	//	freopen_s(&fp, "CONOUT$", "w", stdout);
+	//	//*stdout = *fp;
+	//	//setvbuf(stdout, NULL, _IONBF, 0);
+	//}
 
 	static HMODULE GetModuleHandleSafe(const char* pszModuleName)
 	{

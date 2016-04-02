@@ -8,6 +8,8 @@
 
 #define LOCAL_ENTITY_INDEX 0
 
+#include "Console.h"
+Console gConsole;
 #include "Vars.h"
 CVars gVars;
 
