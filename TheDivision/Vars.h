@@ -146,11 +146,15 @@ struct CVars
 	CVars()
 	{
 		varFireRate.Set(2080.0f);
-		varReloadTime.Set(10.0f);
+		varReloadTime.Set(1.0f);
+		varEnableMovementSpeed.Set(false);
+		varMovementSpeed.Set(32.0f);
 	}
 
 	CVarFloat varFireRate;
 	CVarFloat varReloadTime;
+
+	CVarBool varEnableMovementSpeed;
 	CVarFloat varMovementSpeed;
 
 	CVarBool varGlow;

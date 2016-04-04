@@ -1,65 +1,73 @@
 #include "sdk.h"
 
-void CheckKeys()
-{
-	// Make sure CPU can keep up
-	SHORT shiftKey = GetAsyncKeyState(VK_LSHIFT);
-
-	if (shiftKey & GetAsyncKeyState(VK_UP))
-	{
-		gVars.varReloadTime += 1.0f;
-		printf("varReloadTime: %f\n", gVars.varReloadTime.Get());
-	}
-	else if (shiftKey & GetAsyncKeyState(VK_DOWN))
-	{
-		if (gVars.varReloadTime <= 1.0f)
-			gVars.varReloadTime = 1.0f;
-		else
-			gVars.varReloadTime -= 1.0f;
-		printf("varReloadTime: %f\n", gVars.varReloadTime.Get());
-	}
-
-	if (shiftKey & GetAsyncKeyState(VK_RIGHT))
-	{
-		if (gVars.varFireRate > 8000.0f)
-			gVars.varFireRate = 8000.0f;
-		else
-			gVars.varFireRate += 1.0f;
-		printf("varFireRate: %f\n", gVars.varFireRate.Get());
-	}
-	else if (shiftKey & GetAsyncKeyState(VK_LEFT))
-	{
-		if (gVars.varFireRate < 1.0f)
-			gVars.varFireRate = 1.0f;
-		else
-			gVars.varFireRate -= 1.0f;
-		printf("varFireRate: %f\n", gVars.varFireRate.Get());
-	}
-
-	SHORT ctrlKey = GetAsyncKeyState(VK_LCONTROL);
-	if (ctrlKey & GetAsyncKeyState(VK_RIGHT))
-	{
-		gVars.varMovementSpeed += 1.0f;
-		printf("varMovementSpeed: %f\n", gVars.varMovementSpeed.Get());
-	}
-	else if (ctrlKey & GetAsyncKeyState(VK_LEFT))
-	{
-		if (gVars.varMovementSpeed < 1.0f)
-			gVars.varMovementSpeed = 1.0f;
-		else
-			gVars.varMovementSpeed -= 1.0f;
-		printf("varMovementSpeed: %f\n", gVars.varMovementSpeed.Get());
-	}
-
-
-}
-
-unsigned int __stdcall Init(LPVOID lpArguments)
+unsigned int __stdcall KeyboardListenerThread(LPVOID lpArguments)
 {
 	for (;;)
 	{
-		CheckKeys();
+		Sleep(1); // Make sure cpu can keep up
 
+		bool shift = IsKeyDown(VK_LSHIFT);
+		bool ctrl = IsKeyDown(VK_LCONTROL);
+
+		if (shift && WasKeyDown(VK_UP))
+		{
+			gVars.varReloadTime += 1.0f;
+			printf("varReloadTime: %f\n", gVars.varReloadTime.Get());
+		}
+		if (shift && WasKeyDown(VK_DOWN))
+		{
+			if (gVars.varReloadTime <= 1.0f)
+				gVars.varReloadTime = 1.0f;
+			else
+				gVars.varReloadTime -= 1.0f;
+			printf("varReloadTime: %f\n", gVars.varReloadTime.Get());
+		}
+
+		if (shift && WasKeyDown(VK_RIGHT))
+		{
+			if (gVars.varFireRate > 8000.0f)
+				gVars.varFireRate = 8000.0f;
+			else
+				gVars.varFireRate += 1.0f;
+			printf("varFireRate: %f\n", gVars.varFireRate.Get());
+		}
+		if (shift && WasKeyDown(VK_LEFT))
+		{
+			if (gVars.varFireRate < 1.0f)
+				gVars.varFireRate = 1.0f;
+			else
+				gVars.varFireRate -= 1.0f;
+			printf("varFireRate: %f\n", gVars.varFireRate.Get());
+		}
+
+		if (ctrl && WasKeyDown(VK_RIGHT))
+		{
+			gVars.varMovementSpeed += 1.0f;
+			printf("varMovementSpeed: %f\n", gVars.varMovementSpeed.Get());
+		}
+		if (ctrl && WasKeyDown(VK_LEFT))
+		{
+			if (gVars.varMovementSpeed < 1.0f)
+				gVars.varMovementSpeed = 1.0f;
+			else
+				gVars.varMovementSpeed -= 1.0f;
+			printf("varMovementSpeed: %f\n", gVars.varMovementSpeed.Get());
+		}
+		 
+		if (WasKeyDown(VK_F1))
+		{
+			gVars.varEnableMovementSpeed.Toggle();
+			printf("varEnableMovementSpeed: %s\n", gVars.varEnableMovementSpeed.Get() ? "true" : "false");
+		}
+	}
+
+}
+
+unsigned int __stdcall HackThread(LPVOID lpArguments)
+{
+
+	for (;;)
+	{
 		RClient* pRClient = RClient::Get();
 		if (!pRClient)
 			continue;
@@ -102,7 +110,10 @@ unsigned int __stdcall Init(LPVOID lpArguments)
 		/* Hacks start here! */
 
 		// Change movement speed
-		pAttributeInfo->SetMovementSpeed(gVars.varMovementSpeed.Get());
+		if (gVars.varEnableMovementSpeed)
+			pAttributeInfo->SetMovementSpeed(gVars.varMovementSpeed.Get());
+		else
+			pAttributeInfo->SetMovementSpeed(2.0f);
 
 		// Change fire rate
 		pAttributeInfo->SetFireRate(gVars.varFireRate.Get());
@@ -122,7 +133,16 @@ unsigned int __stdcall Init(LPVOID lpArguments)
 		// Null Sway
 		pAttributeInfo->NullSway();
 
-
+		//AttributeManager* module = AttributeManager::Get();
+		//if (!module)
+		//	continue;
+		//for (int idx = 0; idx < AttributeManager::AtributeIndexMax; idx++)
+		//{
+		//	auto pAttrib = pAttributeInfo->GetInfoByIndex(module->GetIndexer(idx)->index);
+		//	if (!pAttrib)
+		//		continue;
+		//	printf("%s: %f\n", GetAttributeStringfromIndex(idx), pAttrib->data);
+		//}
 
 	}
 
@@ -133,17 +153,21 @@ unsigned int __stdcall Init(LPVOID lpArguments)
 int __stdcall DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpvReserved)
 {
 	static HANDLE hMainThread = INVALID_HANDLE_VALUE;
+	static HANDLE hKeyThread = INVALID_HANDLE_VALUE;
 	if (fdwReason == DLL_PROCESS_ATTACH)
 	{
 		//Utils::CreateConsole("Yolo");
 		printf("*** TheDiviShun ***\n    by dude719\n\nLoaded at 0x%IX\n", (size_t)hModule);
-		hMainThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Init, NULL, 0, NULL);
+		hMainThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)HackThread, NULL, 0, NULL);
+		hKeyThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)KeyboardListenerThread, NULL, 0, NULL);
 		return (hMainThread != INVALID_HANDLE_VALUE);
 	}
 	else if (fdwReason == DLL_PROCESS_DETACH)
 	{
-		gConsole.Release();
+		//gConsole.Release();
+		
 		TerminateThread(hMainThread, 0);
+		TerminateThread(hKeyThread, 0);
 	}
 
 	return 0;

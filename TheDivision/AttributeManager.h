@@ -310,7 +310,8 @@ public:
 		WeaponAccuracyCompareUI = 286,
 		WeaponRangeCompareUI = 287,
 		WeaponReloadTimeCompareUI = 288,
-		WeaponStabilityCompareUI = 289
+		WeaponStabilityCompareUI = 289,
+		AtributeIndexMax
 	};
 
 	char _pad0[0x98];
@@ -341,5 +342,4 @@ public:
 	{
 		return indexInfo[index];
 	}
-
 };

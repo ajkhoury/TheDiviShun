@@ -122,14 +122,30 @@ public:
 		if (!pRecoilMinFinal)
 			return false;
 		pRecoilMinFinal->data = 0.0f;
-		//AttributeInfo::Info* pRecoilRecoveryPerSecondFinal = GetInfoByIndex(module->GetIndexer(AttributeManager::RecoilRecoveryPerSecondFinal)->index);
-		//if (!pRecoilRecoveryPerSecondFinal)
-		//	return false;
-		//pRecoilRecoveryPerSecondFinal->data = 0.0f;
-		//AttributeInfo::Info* pRecoilRecoveryTimeMSFinal = GetInfoByIndex(module->GetIndexer(AttributeManager::RecoilRecoveryTimeMSFinal)->index);
-		//if (!pRecoilRecoveryTimeMSFinal)
-		//	return false;
-		//pRecoilRecoveryTimeMSFinal->data = 0.0f;
+		auto pHorizontalRecoilBorderLeftFinal = GetInfoByIndex(module->GetIndexer(AttributeManager::HorizontalRecoilBorderLeftFinal)->index);
+		if (!pHorizontalRecoilBorderLeftFinal)
+			return false;
+		pHorizontalRecoilBorderLeftFinal->data = 0.0f;
+		auto pHorizontalRecoilBorderRightFinal = GetInfoByIndex(module->GetIndexer(AttributeManager::HorizontalRecoilBorderRightFinal)->index);
+		if (!pHorizontalRecoilBorderRightFinal)
+			return false;
+		pHorizontalRecoilBorderRightFinal->data = 0.0f;
+		auto pHorizontalRecoilLeftFinal = GetInfoByIndex(module->GetIndexer(AttributeManager::HorizontalRecoilLeftFinal)->index);
+		if (!pHorizontalRecoilLeftFinal)
+			return false;
+		pHorizontalRecoilLeftFinal->data = 0.0f;
+		auto pHorizontalRecoilRecoveryTimeMSFinal = GetInfoByIndex(module->GetIndexer(AttributeManager::HorizontalRecoilRecoveryTimeMSFinal)->index);
+		if (!pHorizontalRecoilRecoveryTimeMSFinal)
+			return false;
+		pHorizontalRecoilRecoveryTimeMSFinal->data = 0.0f;
+		auto pHorizontalRecoilRightFinal = GetInfoByIndex(module->GetIndexer(AttributeManager::HorizontalRecoilRightFinal)->index);
+		if (!pHorizontalRecoilRightFinal)
+			return false;
+		pHorizontalRecoilRightFinal->data = 0.0f;
+		auto pHorizontalRecoilTimeMSFinal = GetInfoByIndex(module->GetIndexer(AttributeManager::HorizontalRecoilTimeMSFinal)->index);
+		if (!pHorizontalRecoilTimeMSFinal)
+			return false;
+		pHorizontalRecoilTimeMSFinal->data = 0.0f;
 		return true;
 	}
 
