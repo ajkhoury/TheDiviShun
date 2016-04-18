@@ -2,14 +2,13 @@
 
 #ifdef _DEBUG
 #ifndef MESSAGES_ENABLED
-//#define MESSAGES_ENABLED
+#define MESSAGES_ENABLED
 #endif
+#include "Console.h"
+Console gConsole;
 #endif
 
 #define LOCAL_ENTITY_INDEX 0
-
-//#include "Console.h"
-//Console gConsole;
 
 #include "Vars.h"
 CVars gVars;

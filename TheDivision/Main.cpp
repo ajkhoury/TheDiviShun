@@ -59,6 +59,24 @@ unsigned int __stdcall KeyboardListenerThread(LPVOID lpArguments)
 			gVars.varEnableMovementSpeed.Toggle();
 			printf("varEnableMovementSpeed: %s\n", gVars.varEnableMovementSpeed.Get() ? "true" : "false");
 		}
+
+		#ifdef Friend
+		if (WasKeyDown(VK_NUMPAD1))
+		{
+			gVars.varFireRate = 700.0f;
+			printf("gVars.varFireRate: %f\n", gVars.varFireRate.Get());
+		}
+		else if (WasKeyDown(VK_NUMPAD2))
+		{
+			gVars.varFireRate = 1000.0f;
+			printf("gVars.varFireRate: %f\n", gVars.varFireRate.Get());
+		}
+		else if (WasKeyDown(VK_NUMPAD3))
+		{
+			gVars.varFireRate = 2100.0f;
+			printf("gVars.varFireRate: %f\n", gVars.varFireRate.Get());
+		}
+		#endif
 	}
 
 }
@@ -109,14 +127,18 @@ unsigned int __stdcall HackThread(LPVOID lpArguments)
 
 		/* Hacks start here! */
 
+		#ifndef Friend
 		// Change movement speed
 		if (gVars.varEnableMovementSpeed)
 			pAttributeInfo->SetMovementSpeed(gVars.varMovementSpeed.Get());
 		else
-			pAttributeInfo->SetMovementSpeed(2.0f);
+			pAttributeInfo->SetMovementSpeed(1.0f);
+		#endif	
 
 		// Change fire rate
+		#ifndef Friend
 		pAttributeInfo->SetFireRate(gVars.varFireRate.Get());
+		#endif
 
 		// Change reload time
 		pAttributeInfo->SetReloadTime(gVars.varReloadTime.Get());
@@ -156,11 +178,10 @@ int __stdcall DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpvReserved)
 	static HANDLE hKeyThread = INVALID_HANDLE_VALUE;
 	if (fdwReason == DLL_PROCESS_ATTACH)
 	{
-		//Utils::CreateConsole("Yolo");
 		printf("*** TheDiviShun ***\n    by dude719\n\nLoaded at 0x%IX\n", (size_t)hModule);
 		hMainThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)HackThread, NULL, 0, NULL);
 		hKeyThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)KeyboardListenerThread, NULL, 0, NULL);
-		return (hMainThread != INVALID_HANDLE_VALUE);
+		return (hMainThread != INVALID_HANDLE_VALUE) && (hKeyThread != INVALID_HANDLE_VALUE);
 	}
 	else if (fdwReason == DLL_PROCESS_DETACH)
 	{
