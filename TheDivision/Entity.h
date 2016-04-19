@@ -3,6 +3,8 @@
 #include "Vector.h"
 #include "AttributeInfo.h"
 
+class Entity;
+
 class EntityInfo
 {
 public:
@@ -21,6 +23,15 @@ public:
 	__int32 m_maxHealth; //0x00A4 
 	char pad_0x00A8[0x20]; //0x00A8
 };//Size=0x00C8
+
+class Crosshair
+{
+public:
+	char pad_0x0000[0x2F5C]; //0x0000
+	Vector crosshairWorldPosition; //0x2F5C 
+	Entity* pCrosshairEntity; //0x2F68 
+	char pad_0x2F70[0x88]; //0x2F70
+};//Size=0x2FF8
 
 class Entity
 {
@@ -49,12 +60,3 @@ public:
 	char pad_0x05D0[0xA8]; //0x05D0
 
 };//Size=0x0678
-
-class Crosshair
-{
-public:
-	char pad_0x0000[0x2F5C]; //0x0000
-	Vector crosshairWorldPosition; //0x2F5C 
-	Entity* pCrosshairEntity; //0x2F68 
-	char pad_0x2F70[0x88]; //0x2F70
-};//Size=0x2FF8

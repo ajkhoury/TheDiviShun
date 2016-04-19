@@ -23,22 +23,28 @@ public:
 
 	static RClient* Get()
 	{
-		size_t location = (size_t)(Utils::FindPattern((size_t)GetModuleHandle(NULL), 0x6B57000, sigRClient, sizeof(sigRClient)) + 3);
-		#ifdef MESSAGES_ENABLED
-		printf("location: 0x%IX\n", location);
-		#endif
-		
-		DWORD offset = *(DWORD*)(location);
-		#ifdef MESSAGES_ENABLED
-		printf("offset: 0x%X\n", offset);
-		#endif
-		
-		size_t address = *(size_t*)(location + offset + 4);
-		#ifdef MESSAGES_ENABLED
-		printf("address: 0x%IX\n", address);
-		#endif
+		static RClient* RClientAddress = NULL;
+		if (RClientAddress == NULL)
+		{
+			size_t location = (size_t)(Utils::FindPattern((size_t)GetModuleHandle(NULL), 0x6B57000, sigRClient, sizeof(sigRClient)) + 3);
+			#ifdef MESSAGES_ENABLED
+			printf("location: 0x%IX\n", location);
+			#endif
+			
+			DWORD offset = *(DWORD*)(location);
+			#ifdef MESSAGES_ENABLED
+			printf("offset: 0x%X\n", offset);
+			#endif
+			
+			size_t address = *(size_t*)(location + offset + 4);
+			#ifdef MESSAGES_ENABLED
+			printf("address: 0x%IX\n", address);
+			#endif
 
-		return (RClient*)address;
+			RClientAddress = (RClient*)address;
+		}
+
+		return RClientAddress;
 	}
 
 };//Size=0x0408

@@ -155,6 +155,16 @@ unsigned int __stdcall HackThread(LPVOID lpArguments)
 		// Null Sway
 		pAttributeInfo->NullSway();
 
+		AttributeManager* module = AttributeManager::Get();
+		if (!module)
+			continue;
+
+		//auto ClipSizeFinal = pAttributeInfo->GetInfoByIndex(module->GetIndexer(AttributeManager::ClipSizeFinal)->index);
+		//if (!ClipSizeFinal)
+		//	continue;
+		//printf("%s(0x%IX): %f\n", GetAttributeStringfromIndex(AttributeManager::ClipSizeFinal), (size_t)ClipSizeFinal, ClipSizeFinal->data);
+		//ClipSizeFinal->data = 999.0f;
+
 		//AttributeManager* module = AttributeManager::Get();
 		//if (!module)
 		//	continue;
@@ -185,8 +195,10 @@ int __stdcall DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpvReserved)
 	}
 	else if (fdwReason == DLL_PROCESS_DETACH)
 	{
-		//gConsole.Release();
-		
+		#ifdef _DEBUG
+		gConsole.Release();
+		#endif
+
 		TerminateThread(hMainThread, 0);
 		TerminateThread(hKeyThread, 0);
 	}
